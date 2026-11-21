@@ -1,0 +1,27 @@
+# Seed configuration of the lab daemon; see docker-compose.yml.
+global:
+  asn: 65001
+  routerId: 10.99.0.2
+  listenPort: 179
+neighbors:
+  - address: 10.99.0.3
+    remoteAsn: 65002
+    description: frr_ebgp IPv4
+    families: [ipv4-unicast]
+  - address: fd00:99::3
+    remoteAsn: 65002
+    description: frr_ebgp IPv6
+    families: [ipv6-unicast]
+  - address: 10.99.0.4
+    remoteAsn: 65001
+    description: frr_ibgp IPv4
+    families: [ipv4-unicast]
+    routeReflectorClient: true
+  - address: fd00:99::4
+    remoteAsn: 65001
+    description: frr_ibgp IPv6
+    families: [ipv6-unicast]
+    routeReflectorClient: true
+routes:
+  - prefix: 192.0.2.0/24
+  - prefix: 2001:db8:1::/48

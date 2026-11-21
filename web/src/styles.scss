@@ -1,0 +1,261 @@
+@use '@angular/material' as mat;
+
+// Palette: cable blue for actions, and the three link-LED colors for session
+// state. Each value is light / dark.
+:root {
+  --bg: light-dark(#eef2f5, #0f1c28);
+  --surface: light-dark(#ffffff, #172a39);
+  --raised: light-dark(#f6f8fa, #1f364a);
+  --ink: light-dark(#12202c, #e1eaf1);
+  --muted: light-dark(#566878, #93a6b5);
+  --line: light-dark(#d3dce3, #2a4257);
+  --primary: light-dark(#0b5cad, #6cb2f5);
+  --on-primary: light-dark(#ffffff, #0b1d2c);
+  --up: light-dark(#0c7d61, #44c9a6);
+  --wait: light-dark(#a15f00, #f0b341);
+  --down: light-dark(#bf3a29, #f0705c);
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+html {
+  color-scheme: dark;
+  @include mat.theme(
+    (
+      color: mat.$blue-palette,
+      typography: (
+        plain-family: 'IBM Plex Sans',
+        brand-family: 'IBM Plex Sans',
+        bold-weight: 600,
+        medium-weight: 500,
+        regular-weight: 400,
+      ),
+      density: -3,
+    )
+  );
+  @include mat.theme-overrides(
+    (
+      primary: var(--primary),
+      on-primary: var(--on-primary),
+      background: var(--bg),
+      surface: var(--surface),
+      surface-container-lowest: var(--surface),
+      surface-container-low: var(--surface),
+      surface-container: var(--raised),
+      surface-container-high: var(--raised),
+      surface-container-highest: var(--raised),
+      on-surface: var(--ink),
+      on-surface-variant: var(--muted),
+      outline: var(--muted),
+      outline-variant: var(--line),
+      error: var(--down),
+      secondary-container: light-dark(#dbe8f6, #254a69),
+      on-secondary-container: var(--ink),
+      corner-extra-large: 6px,
+      corner-large: 6px,
+      corner-medium: 4px,
+      corner-small: 4px,
+      corner-extra-small: 4px,
+      corner-full: 4px,
+    )
+  );
+}
+html[data-scheme='light'] {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 14px/1.45 'IBM Plex Sans', system-ui, sans-serif;
+}
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+h1 {
+  font-size: 22px;
+  line-height: 1.25;
+}
+h2 {
+  font-size: 15px;
+}
+a {
+  color: var(--primary);
+}
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+// Addresses, prefixes and AS paths line up in a fixed-width face.
+.mono {
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.muted {
+  color: var(--muted);
+}
+
+.page {
+  padding: 24px 28px 40px;
+  max-width: 1500px;
+  display: grid;
+  gap: 20px;
+}
+.page-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    max-width: 70ch;
+  }
+  .spacer {
+    flex: 1;
+  }
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  min-width: 0;
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  .spacer {
+    flex: 1;
+  }
+}
+.panel-body {
+  padding: 16px;
+}
+.empty {
+  padding: 28px 16px;
+  color: var(--muted);
+  text-align: center;
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  th,
+  td {
+    padding: 8px 12px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--raised);
+  }
+  th.num,
+  td.num {
+    text-align: right;
+  }
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  tbody tr:hover td {
+    background: var(--raised);
+  }
+}
+.scroll-x {
+  overflow-x: auto;
+}
+
+.tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-size: 12px;
+  color: var(--muted);
+  & + & {
+    margin-left: 4px;
+  }
+}
+
+// Forms: a responsive grid of Material fields.
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px 12px;
+  align-items: start;
+  margin-bottom: 14px;
+  .wide {
+    grid-column: 1 / -1;
+  }
+  mat-checkbox {
+    align-self: center;
+  }
+}
+fieldset {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 8px 0 0;
+  padding: 14px 0 0;
+  legend {
+    padding: 0 8px 0 0;
+    font-weight: 600;
+  }
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+// Side sheet: dialogs slide in from the right and fill the height.
+.sheet .mat-mdc-dialog-surface {
+  border-radius: 0;
+}
+.snack-error {
+  --mat-snack-bar-container-color: var(--down);
+  --mat-snack-bar-supporting-text-color: #fff;
+  --mat-snack-bar-button-color: #fff;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 16px 12px 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+// An icon leading a button label.
+.mdc-button app-icon {
+  margin-right: 6px;
+  vertical-align: -5px;
+}
+
+// Room for the floating label of the first field in a dialog.
+.mat-mdc-dialog-content.mdc-dialog__content {
+  padding-top: 8px !important;
+}

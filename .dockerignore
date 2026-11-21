@@ -1,0 +1,8 @@
+.git
+.code-review-graph
+bin
+data
+vendor
+web/node_modules
+web/.angular
+web/dist

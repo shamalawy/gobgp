@@ -1,0 +1,51 @@
+# A lab that peers bgpd with two FRRouting routers over IPv4 and IPv6:
+# frr_ebgp in AS 65002 (eBGP) and frr_ibgp in AS 65001 (iBGP, route reflector
+# client). Start it with `make lab`, then open http://127.0.0.1:8080.
+name: gobgp
+
+services:
+  bgpd:
+    build:
+      context: .
+      args: { VERSION: "${VERSION:-dev}" }
+    container_name: gobgp_bgpd
+    command: ["-http", "0.0.0.0:8080", "-seed", "/lab/bgpd.yaml"]
+    ports:
+      - "127.0.0.1:${BGPD_HTTP_PORT:-8080}:8080" # the UI and API have no authentication
+    volumes:
+      - bgpd_data:/data
+      - ./deploy/lab/bgpd.yaml:/lab/bgpd.yaml:ro
+    networks:
+      lab: { ipv4_address: 10.99.0.2, ipv6_address: "fd00:99::2" }
+
+  frr_ebgp:
+    image: quay.io/frrouting/frr:10.2.1
+    container_name: gobgp_frr_ebgp
+    # The image takes ownership of /etc/frr, so the lab files are copied in.
+    command: ["sh", "-c", "cp /lab/* /etc/frr/ && exec /usr/lib/frr/docker-start"]
+    cap_add: [NET_ADMIN, NET_RAW, SYS_ADMIN]
+    volumes:
+      - ./deploy/lab/frr-ebgp:/lab:ro
+    networks:
+      lab: { ipv4_address: 10.99.0.3, ipv6_address: "fd00:99::3" }
+
+  frr_ibgp:
+    image: quay.io/frrouting/frr:10.2.1
+    container_name: gobgp_frr_ibgp
+    command: ["sh", "-c", "cp /lab/* /etc/frr/ && exec /usr/lib/frr/docker-start"]
+    cap_add: [NET_ADMIN, NET_RAW, SYS_ADMIN]
+    volumes:
+      - ./deploy/lab/frr-ibgp:/lab:ro
+    networks:
+      lab: { ipv4_address: 10.99.0.4, ipv6_address: "fd00:99::4" }
+
+volumes:
+  bgpd_data:
+
+networks:
+  lab:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 10.99.0.0/24
+        - subnet: fd00:99::/64
