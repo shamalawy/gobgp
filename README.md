@@ -234,7 +234,8 @@ What you get:
 ### Full-table feed
 
 Load a real internet table and advertise it to a router under test: to check
-its memory, convergence time or policy. See [Bulk injection](#bulk-injection).
+its memory, convergence time or policy. The table comes from a public RIPE RIS
+snapshot; see [Full internet table sources](#full-internet-table-sources).
 
 ```sh
 curl -X POST http://127.0.0.1:8080/api/v1/inject \
@@ -457,6 +458,38 @@ Otherwise the global `import` and `export` apply.
 
 Files may be plain, `.gz` or `.bz2`. They come from an upload, an `http(s)` URL
 or a path the daemon can read.
+
+### Full internet table sources
+
+RIPE RIS publishes a fresh snapshot of the internet table every eight hours.
+These URLs always point at the latest one:
+
+| URL | Size | Notes |
+| --- | --- | --- |
+| `https://data.ris.ripe.net/rrc26/latest-bview.gz` | about 35 MB | Small collector. About 1.1M IPv4 and 260k IPv6 routes. Loads in about a minute. **Start here.** |
+| `https://data.ris.ripe.net/rrc00/latest-bview.gz` | about 430 MB | The largest collector, with many peers. Slower to download and read; the table is the same size. |
+
+Other collectors (`rrc01`, `rrc03`, …) use the same path. Dated files are at
+`https://data.ris.ripe.net/rrcNN/YYYY.MM/bview.YYYYMMDD.HHMM.gz`.
+
+In the UI: **Route injection → Inject a full table → URL or path on the
+server**, paste the URL into **Source**, keep **Set next hop to this speaker**
+ticked, and click **Start injection**.
+
+From the command line:
+
+```sh
+curl -X POST http://127.0.0.1:8080/api/v1/inject \
+  -d '{"source":"https://data.ris.ripe.net/rrc26/latest-bview.gz","nextHopSelf":true}'
+
+curl http://127.0.0.1:8080/api/v1/inject          # progress
+curl -X DELETE http://127.0.0.1:8080/api/v1/routes/injected   # withdraw them again
+```
+
+The daemon downloads the file itself, so it needs outbound HTTPS access. On a
+host without it, download the file elsewhere and upload it in the UI.
+
+### Choosing paths from a dump
 
 An MRT snapshot holds one path per collector peer for every prefix. By default
 the first path of each prefix is taken, which gives the most complete table.
